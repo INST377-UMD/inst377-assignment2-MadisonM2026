@@ -1,0 +1,97 @@
+<!--Madison Montague, INST377(0103)-->
+<html>
+  
+  <head>
+    <title>Assignment2_Home</title>
+    <link rel="stylesheet" href="INST377_Assignment2CS.css"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>INST377 Activities Website</h1>
+      <nav>
+        <ul class="nav_bar">
+          <li><a href="INST377_Assignment2Home.html">Home</a></li>
+          <li><a href="INST377_Assignment2Stock.html">Stocks</a></li>
+          <li><a href="INST377_Assignment2Dogs.html">Dogs</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <main>
+      <section class="two_buttons">
+        <h2>Check out the activity options below:</h2>
+        <div class="sd_buttons">
+          <button class="action-button" onclick="window.location.href='INST377_Assignment2Stock.html'">Stocks</button>
+          <button class="action-button" onclick="window.location.href='INST377_Assignment2Dogs.html'">Dogs</button>
+        </div>
+      </section>
+      
+      <section class="quotes">
+        <h3>Today's quote...</h3>
+        <p id="the_quote">Loading quote...</p>
+      </section>
+      
+      <section class="audio">
+        <h2>Audio Options:</h2>
+        <ul>
+          <li>Say "Hello" to recieve a greeting.</li>
+          <li>Say "Change the color to <color>" to change the color of the page.</li>
+          <li>Say "Navigate to <otherpages>" to go to another page (ex: Stocks, Dogs).</li>
+        </ul>
+        
+        <button id="audio_on">Audio On</button>
+        <button id="audio_off" disabled>Audio Off</button>
+      </section>
+    </main>
+  
+
+    <script>  
+      window.onload = function() {
+        fetch("https://zenquotes.io/api/quotes")
+        .then(response => response.json())
+        .then(data => {
+          const random_quote = data[Math.floor(Math.random() * data.length)];
+          const quote = random_quote.q;
+          const author = random_quote.a;
+          document.getElementById("the_quote").textContent = `"${quote}" — ${author}`;
+        })
+        .catch(error => {
+          document.getElementById("the_quote").textContent = "Could Not Load Quote. Try Again Later.";
+        });
+      };
+    
+
+    if (annyang) {
+      const audio_result = {
+        "hello": () => alert("Hello World!"),
+        "change the color to *color": (color) => {
+          document.body.style.backgroundColor = color;
+        },
+        "navigate to *otherpages": (otherpages) => {
+          potherpagesage = otherpages.toLowerCase();
+          if (otherpages.includes("home")) window.location.href = "INST377_Assignment2Home.html";
+          else if (otherpages.includes("dogs")) window.location.href = "INST377_Assignment2Dogs.html";
+          else if (otherpages.includes("stocks")) window.location.href = "INST377_Assignment2Stock.html";
+        }
+      };
+      
+      annyang.addCommands(audio_result); 
+
+      document.getElementById("audio_on").addEventListener("click", () => {
+        annyang.start();
+        document.getElementById("audio_on").disabled = true;
+        document.getElementById("audio_off").disabled = false;
+      });
+      
+      document.getElementById("audio_off").addEventListener("click", () => {
+        annyang.abort();
+        document.getElementById("audio_on").disabled = false;
+        document.getElementById("audio_off").disabled = true;
+      });
+    }
+
+    </script>
+  </body>
+</html>
